@@ -19,19 +19,6 @@ cur_trial = None
 
 def generate_vote_data():
     global o2e, cur_trial
-    # np.random.seed(7)
-    # ns = 50
-    # stop = []
-    # stoh = []
-    # stodv = []
-    # for _ in range(ns):
-    #     dv = get_random_dv()
-    #     hs = get_random_hs()
-    #     stodv.append(dv)
-    #     stoh.append(hs)
-    #     stop.append(hs * HOUSE_REP_TO_POP)
-    # vd = VoterData(ns, stop, stoh, stodv)
-    
     vd = o2e.generate_trial()
     cur_trial = vd
     states = ['Vermont', 'Ohio', 'South Dakota', 'Alaska', 'Michigan', 'Oklahoma', 'Mississippi', 'Virginia', 'Texas', 'Arkansas', 'Utah', 'Connecticut', 'Delaware', 'Florida', 'Indiana', 'Maryland', 'New Hampshire', 'Arizona', 'New Mexico', 'Nebraska', 'Kansas', 'Louisiana', 'Tennessee', 'Maine', 'Rhode Island', 'Colorado', 'Idaho', 'North Carolina', 'Georgia', 'Kentucky', 'New Jersey', 'West Virginia', 'Massachusetts', 'Iowa', 'Hawaii', 'Washington', 'Alabama', 'Wisconsin', 'California', 'North Dakota', 'Pennsylvania', 'Wyoming', 'South Carolina', 'New York', 'Illinois', 'Minnesota', 'Montana', 'Nevada', 'Missouri', 'Oregon']
