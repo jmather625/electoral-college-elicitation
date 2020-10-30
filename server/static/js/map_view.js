@@ -8,12 +8,18 @@ String.prototype.toProperCase = function () {
     return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 };
 
+// turns a number into a string with commas
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const reset = function() {
     opacity_dict = null;
 }
 
 // declare variables
-let COLOR_INTERFACE = new ColorInterface();
+const COLOR_INTERFACE = new ColorInterface();
+const HOUSE_REP_TO_POP = 1e6
 
 // SVG
 const width = 1200;
@@ -38,21 +44,6 @@ const legendLayer = svg.append('g')
 const mapLayer = svg.append('g')
                     .classed('map-layer', true);
 
-// const textLayer = svg.append('g')
-//                     .classed('text-layer', true)
-//                     .attr("x", (width / 2))
-//                     .attr("y", 60)
-//                     .attr("text-anchor", "middle")
-//                     .style("font-size", "30px")
-//                     .style("font-family", "Arial")
-//                     .text("huzzaaa");
-
-// const textLabels = mapLayer.selectAll('path')
-//                             .data(features)
-//                             .enter().append('path')
-//                             .attr("x", function(d) {return 300})
-//                             .attr("y", function(d) {return 300})
-//                             .text("whaddup");
 
 const hover_div = d3.select("body").append("div")
                                     .attr("class", "hover-text")
@@ -62,9 +53,18 @@ const hover_div = d3.select("body").append("div")
 const construct_hover_text = function(state) {
     /** 
      * FORMAT:
-     * TODO
+     * State: {}
+     * House Reps: {}
+     * %D: {}, %R: {}
+     * {} D votes, {} R votes
     */
-   return "wassup";
+   const [hr, vd] = VOTE_INTERFACE.get_state_values(state);
+   const pop = hr * HOUSE_REP_TO_POP;
+
+   return `State: ${state.toProperCase()}\n \
+            House Reps: ${hr}\n \
+            %D: ${(vd).toFixed(2)}, %R: ${(1 - vd).toFixed(2)}\n \
+            ${ numberWithCommas( (vd * pop).toFixed(0) ) } D votes, %R:  ${ numberWithCommas( ((1 - vd) * pop).toFixed(0) ) } R votes\n`
 }
 
 
@@ -81,7 +81,7 @@ const displayBaseMap = function () {
             .attr("text-anchor", "middle")
             .style("font-size", "30px")
             .style("font-family", "Arial")
-            .text("Illinois Counties");
+            .text("Election Scenarios");
 
 
     mapLayer.selectAll('path')
@@ -120,19 +120,20 @@ const displayBaseMap = function () {
                         .style("opacity", 0);
             });
 
-    for (var i = 0; i < 50; i++) {
-        var state = features[i].properties['STATE_NAME'];
-        console.log(state);
-        // Add a text label.
-        var text = svg.append("text")
-            // .attr("dx", 5)
-            // .attr("dy", 5);
+    // render text
+    // for (var i = 0; i < 50; i++) {
+    //     var state = features[i].properties['STATE_NAME'];
+    //     console.log(state);
+    //     // Add a text label.
+    //     var text = svg.append("text")
+    //         // .attr("dx", 5)
+    //         // .attr("dy", 5);
 
-        text.append("textPath")
-        .attr("stroke","black")
-        .attr("xlink:href","#path_" + i.toString())
-        .text( VOTE_INTERFACE.get_state_values(state)[0] );
-    }
+    //     text.append("textPath")
+    //     .attr("stroke","black")
+    //     .attr("xlink:href","#path_" + i.toString())
+    //     .text( VOTE_INTERFACE.get_state_values(state)[0] );
+    // }
 
     console.log("done rendering base map!");
 }
@@ -173,8 +174,30 @@ const createLegend = function() {
     legend.call(legendQuant);
 }
 
+const addStats = function() {
+    const [popD, tvd, tvr, nb, nr] = VOTE_INTERFACE.get_aggregate_statistics();
+
+    if (popD > 0.5) {
+        $('#popular').text(`Popular: ${popD.toFixed(4)} Democrat`);
+    } else {
+        $('#popular').text(`Popular: ${(1 - popD).toFixed(4)} Republican`);
+    }
+
+    $("#votes").text(`Democrat Votes: ${numberWithCommas(tvd)}, Republican Votes: ${numberWithCommas(tvr)}`);
+    $("#num_states").text(`Blue States: ${nb}, Red States: ${nr}`);
+}
+
+const showResults = function(data) {
+    const f = data['fairness'];
+    if (f == null) {
+        console.log("invalid data:", data);
+        return;
+    }
+    $(".results").append(`<p>Your Fairness: ${f} </p>`)
+}
+
 displayBaseMap();
 colorMap();
 createLegend();
-
+addStats();
 

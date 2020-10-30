@@ -46,8 +46,69 @@
      <div class='svg-container' style="margin: auto; width: 1400px;">
         <svg></svg>
     </div>
+
+    <!-- party chooser  -->
+    <div class="dropdown_polarity">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="polarity_button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Who Should Win?
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" onclick="processChoice('D'); renameDropdown('Democrats');">Democrats</a>
+            <a class="dropdown-item" onclick="processChoice('R'); renameDropdown('Republicans');">Republicans</a>
+        </div>
+    </div>
+
+    <!-- initializes stats div -->
+    <div class='stats' style="margin: auto; width: 800px;">
+        <p>Statistics:</p>
+        <p id='popular'></p>
+        <p id='votes'></p>
+        <p id='num_states'></p>
+    </div>
+
+    <!-- initializes results -->
+    <div class='results' style="margin: auto; width: 800px;">
+
+    </div>
 </body>
 
 <!-- the visualization script -->
 <script type="text/javascript" src="{{ url_for('static', filename='js/map_view.js' ) }}"></script>
+
+<script>
+    // process a choice of Democrat or Republican
+    // make POST to inform server, then update vote data
+    const processChoice = function(winner) {
+        if (winner != "D" && winner != "R") {
+            console.log("Got invalid winner", winner);
+            return ;
+        }
+
+        // POST request with new payload
+        var xhttp = new XMLHttpRequest();
+        const params = JSON.stringify({"winner":winner});;
+        xhttp.onreadystatechange = function() {
+            if (xhttp.readyState === 4 && xhttp.status === 200) {
+                // render the new data
+                var data = JSON.parse(xhttp.responseText);
+                if ('fairness' in data) {
+                    // algorithm is done
+                    showResults(data);
+                } else {
+                    VOTE_DATA = data;
+                    VOTE_INTERFACE.set_data(VOTE_DATA);
+                    colorMap();
+                    addStats();
+                }
+            }
+        };
+        xhttp.open("POST", window.location.href, false);
+        xhttp.send(params);
+    }
+
+    // rename dropdown to reflect choice
+    const renameDropdown = function(unused) {
+
+    }
+</script>
 

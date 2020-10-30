@@ -14,13 +14,12 @@ HOUSE_REP_TO_POP = 1e6
 class Option2Elicit:
     def __init__(self, ns: int):
         assert ns >= 2
-        f = open(f'ns={ns}.pkl', 'rb')
+        f = open(f'ns={ns}_rand.pkl', 'rb')
         self.bounds_upper = pickle.load(f)
         f.close()
         self.ns = ns
         self.fairness = Fairness(MAX_F, MIN_F)
         self.converged = False
-        self.trial_attempts = []
 
 
     def generate_trial(self) -> VoterData:
@@ -54,3 +53,8 @@ class Option2Elicit:
 
     def predict_f(self) -> float:
         return (self.fairness.f_hi + self.fairness.f_lo) / 2
+
+
+    def clear(self):
+        self.fairness = Fairness(MAX_F, MIN_F)
+        self.converged = False

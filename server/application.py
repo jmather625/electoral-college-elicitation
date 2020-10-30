@@ -1,30 +1,39 @@
 import numpy as np
 import json
-from flask import Flask, render_template
+import logging
+import flask
 
 import sys
 sys.path.append("../")
 from common import VoterData, get_random_dv, get_random_hs, HOUSE_REP_TO_POP
+from elicit import Option2Elicit
 
 
-application = Flask(__name__)
+application = flask.Flask(__name__)
 
 
-def get_vote_data():
-    np.random.seed(7)
+# using global for now
+o2e = Option2Elicit(50)
+cur_trial = None
 
-    ns = 50
-    stop = []
-    stoh = []
-    stodv = []
-    for _ in range(ns):
-        dv = get_random_dv()
-        hs = get_random_hs()
-        stodv.append(dv)
-        stoh.append(hs)
-        stop.append(hs * HOUSE_REP_TO_POP)
-    vd = VoterData(ns, stop, stoh, stodv)
 
+def generate_vote_data():
+    global o2e, cur_trial
+    # np.random.seed(7)
+    # ns = 50
+    # stop = []
+    # stoh = []
+    # stodv = []
+    # for _ in range(ns):
+    #     dv = get_random_dv()
+    #     hs = get_random_hs()
+    #     stodv.append(dv)
+    #     stoh.append(hs)
+    #     stop.append(hs * HOUSE_REP_TO_POP)
+    # vd = VoterData(ns, stop, stoh, stodv)
+    
+    vd = o2e.generate_trial()
+    cur_trial = vd
     states = ['Vermont', 'Ohio', 'South Dakota', 'Alaska', 'Michigan', 'Oklahoma', 'Mississippi', 'Virginia', 'Texas', 'Arkansas', 'Utah', 'Connecticut', 'Delaware', 'Florida', 'Indiana', 'Maryland', 'New Hampshire', 'Arizona', 'New Mexico', 'Nebraska', 'Kansas', 'Louisiana', 'Tennessee', 'Maine', 'Rhode Island', 'Colorado', 'Idaho', 'North Carolina', 'Georgia', 'Kentucky', 'New Jersey', 'West Virginia', 'Massachusetts', 'Iowa', 'Hawaii', 'Washington', 'Alabama', 'Wisconsin', 'California', 'North Dakota', 'Pennsylvania', 'Wyoming', 'South Carolina', 'New York', 'Illinois', 'Minnesota', 'Montana', 'Nevada', 'Missouri', 'Oregon']
     vote_data = dict()
     for i in range(50):
@@ -36,10 +45,39 @@ def get_vote_data():
     return vote_data
 
 
-@application.route('/')
+@application.route('/', methods=['GET', 'POST'])
 def home():
-    vote_data = get_vote_data()
+    global o2e, cur_trial
+    if flask.request.method == 'POST':
+        data = None
+        try:
+            data = json.loads(flask.request.get_data())
+        except:
+            logging.error("Error could not parse JSON", exc_info=True)
+            resp = flask.make_response("Error: could not parse JSON", 400)
+            return resp
+        if "winner" not in data or data["winner"] not in ["D", "R"]:
+            logging.error("Invalid payload")
+            resp = flask.make_response("Error: invalid payload", 400)
+            return resp
 
+        if data["winner"] == "D":
+            o2e.process_trial(cur_trial, True)
+        else:
+            o2e.process_trial(cur_trial, False)
+
+        if o2e.converged:
+            f_hat = o2e.predict_f()
+            o2e.clear()
+            return json.dumps(
+                {'fairness': f_hat}
+            )
+
+        vote_data = generate_vote_data()
+        return json.dumps(vote_data)
+
+        
+    vote_data = generate_vote_data()
     fp = open('shapes/usa2.json', 'rb')
     context = {
         'vote_data': vote_data,
@@ -47,7 +85,7 @@ def home():
 
     }
     fp.close()
-    return render_template('map_view.html', **context)
+    return flask.render_template('map_view.html', **context)
 
 
 # run the application.
