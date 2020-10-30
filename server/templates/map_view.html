@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+
+    <!-- loads version 3 of the d3.js library -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.13.0/d3-legend.min.js"></script>
+
+    <!-- bootstrap stuff -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- date picker library -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <!-- select2 library -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <!-- font awesome library -->
+    <script src="https://kit.fontawesome.com/52b21dbc54.js"></script>
+
+    <!-- stylesheets -->
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/map_view.css') }}" type='text/css'/>
+
+    <!-- My little API for tweets data, makes code more manageable -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/vote_interface.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/coloring.js') }}"></script>
+
+    <!-- initializes global variables in JS -->
+    <script>
+        let VOTE_DATA = JSON.parse('{{ vote_data | tojson | safe }}');
+        console.log(VOTE_DATA);
+        const MAP_DATA = JSON.parse('{{ map_json | tojson | safe }}');
+        const VOTE_INTERFACE = new VoteInterface(VOTE_DATA);
+    </script>
+</head>
+
+<body>
+     <!-- initializes the SVG element -->
+     <div class='svg-container' style="margin: auto; width: 1400px;">
+        <svg></svg>
+    </div>
+</body>
+
+<!-- the visualization script -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/map_view.js' ) }}"></script>
+
