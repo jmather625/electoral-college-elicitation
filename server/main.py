@@ -56,6 +56,10 @@ def home():
  
         sid = flask.session['sid']
         ret = get_session_data(sid)
+        if ret is None:
+            logging.error(f"sid {sid} not in session data")
+            resp = flask.make_response("Error: never started the survey", 400)
+            return resp
         ee = ret[0]
         cur_vd = ret[1]
         if data["winner"] == "D":
