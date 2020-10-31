@@ -23,7 +23,7 @@ const HOUSE_REP_TO_POP = 0.75 * 1e6
 
 // SVG
 const width = 1200;
-const height = 450;
+const height = 500;
 
 const projection = d3.geo.mercator()
                         .scale(600)

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ece-mvp
+  name: ece-mvp
+  namespace: ece
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ece-mvp
+  template:
+    metadata:
+      labels:
+        app: ece-mvp
+    spec:
+      containers:
+      - image: jmather/ece-mvp:1.0
+        name: ece-mvp
+        ports:
+        - containerPort: 80
+          name: ece-mvp
+          
