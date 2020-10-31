@@ -5,21 +5,29 @@ import flask
 
 import sys
 sys.path.append("../")
-from common import VoterData, get_random_dv, get_random_hs, HOUSE_REP_TO_POP
-from elicit import Option2Elicit
+from elicit import ElectoralElicitation
 
 
 application = flask.Flask(__name__)
 
 
 # using global for now
-o2e = Option2Elicit(50)
+ee = ElectoralElicitation(50)
 cur_trial = None
 
 
+def option_to_string(option: int):
+    if option == 1:
+        return "Option 1: Winner Takes All"
+    elif option == 2:
+        return "Option 2: Split-Vote"
+    else:
+        return "ERROR"
+
+
 def generate_vote_data():
-    global o2e, cur_trial
-    vd = o2e.generate_trial()
+    global ee, cur_trial
+    vd = ee.generate_trial()
     cur_trial = vd
     states = ['Vermont', 'Ohio', 'South Dakota', 'Alaska', 'Michigan', 'Oklahoma', 'Mississippi', 'Virginia', 'Texas', 'Arkansas', 'Utah', 'Connecticut', 'Delaware', 'Florida', 'Indiana', 'Maryland', 'New Hampshire', 'Arizona', 'New Mexico', 'Nebraska', 'Kansas', 'Louisiana', 'Tennessee', 'Maine', 'Rhode Island', 'Colorado', 'Idaho', 'North Carolina', 'Georgia', 'Kentucky', 'New Jersey', 'West Virginia', 'Massachusetts', 'Iowa', 'Hawaii', 'Washington', 'Alabama', 'Wisconsin', 'California', 'North Dakota', 'Pennsylvania', 'Wyoming', 'South Carolina', 'New York', 'Illinois', 'Minnesota', 'Montana', 'Nevada', 'Missouri', 'Oregon']
     vote_data = dict()
@@ -34,7 +42,7 @@ def generate_vote_data():
 
 @application.route('/', methods=['GET', 'POST'])
 def home():
-    global o2e, cur_trial
+    global ee, cur_trial
     if flask.request.method == 'POST':
         data = None
         try:
@@ -49,15 +57,20 @@ def home():
             return resp
 
         if data["winner"] == "D":
-            o2e.process_trial(cur_trial, True)
+            ee.process_trial(cur_trial, True)
         else:
-            o2e.process_trial(cur_trial, False)
+            ee.process_trial(cur_trial, False)
 
-        if o2e.converged:
-            f_hat = o2e.predict_f()
-            o2e.clear()
+        if ee.converged():
+            o_hat = ee.predict_opt()
+            o_hat_str = option_to_string(o_hat)
+            f_hat = round(ee.predict_f(), 2)
+            ee.clear()
             return json.dumps(
-                {'fairness': f_hat}
+                {
+                    'option': o_hat_str,
+                    'fairness': f_hat,
+                }
             )
 
         vote_data = generate_vote_data()

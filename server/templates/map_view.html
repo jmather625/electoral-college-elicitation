@@ -35,7 +35,6 @@
     <!-- initializes global variables in JS -->
     <script>
         let VOTE_DATA = JSON.parse('{{ vote_data | tojson | safe }}');
-        console.log(VOTE_DATA);
         const MAP_DATA = JSON.parse('{{ map_json | tojson | safe }}');
         const VOTE_INTERFACE = new VoteInterface(VOTE_DATA);
     </script>
@@ -64,6 +63,7 @@
         <p id='popular'></p>
         <p id='votes'></p>
         <p id='num_states'></p>
+        <p id='state_pops'></p>
     </div>
 
     <!-- initializes results -->

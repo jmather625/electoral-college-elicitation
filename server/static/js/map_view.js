@@ -19,7 +19,7 @@ const reset = function() {
 
 // declare variables
 const COLOR_INTERFACE = new ColorInterface();
-const HOUSE_REP_TO_POP = 1e6
+const HOUSE_REP_TO_POP = 0.75 * 1e6
 
 // SVG
 const width = 1200;
@@ -175,7 +175,7 @@ const createLegend = function() {
 }
 
 const addStats = function() {
-    const [popD, tvd, tvr, nb, nr] = VOTE_INTERFACE.get_aggregate_statistics();
+    const [popD, tvd, tvr, nb, nr, pop_blue, pop_red] = VOTE_INTERFACE.get_aggregate_statistics();
 
     if (popD > 0.5) {
         $('#popular').text(`Popular: ${popD.toFixed(4)} Democrat`);
@@ -185,15 +185,18 @@ const addStats = function() {
 
     $("#votes").text(`Democrat Votes: ${numberWithCommas(tvd)}, Republican Votes: ${numberWithCommas(tvr)}`);
     $("#num_states").text(`Blue States: ${nb}, Red States: ${nr}`);
+    $("#state_pops").text(`Total Blue State Population: ${numberWithCommas(pop_blue)}, Total Red State Population: ${numberWithCommas(pop_red)}`);
 }
 
 const showResults = function(data) {
+    const opt = data['option']
     const f = data['fairness'];
-    if (f == null) {
+    if (opt == null || f == null) {
         console.log("invalid data:", data);
         return;
     }
-    $(".results").append(`<p>Your Fairness: ${f} </p>`)
+    $(".results").append(`<p>Your prefer ${opt} </p>`)
+    $(".results").append(`<p>Your State Fairness Term: ${f} </p>`)
 }
 
 displayBaseMap();
