@@ -35,32 +35,44 @@ class Oracle:
 
 
     def should_dwin_o1(self, vd: VoterData) -> bool:
-        lhs = 0
-        rhs = 0
+        num = 0
+        denom = 0
         for i in range(vd.ns):
+            e_s = vd.stoh[i] + self.f
             if vd.stodv[i] > 0.5:
-                lhs += 1
-                rhs += -vd.stoh[i]
-            else:
-                lhs -= 1
-                rhs += vd.stoh[i]
-        return self.f * lhs > rhs
+                num += e_s
+            denom += e_s
+        return num / denom > 0.5
 
     
     def should_dwin_o2(self, vd: VoterData) -> bool:
-        lhs = 0
-        rhs = 0
-        for s in range(vd.ns):
-            lhs += vd.stodv[s] - 0.5
-            rhs += (vd.stodv[s] - 0.5) * vd.stoh[s]
-        return self.f * lhs > -rhs
+        num = 0
+        denom = 0
+        for i in range(vd.ns):
+            e_s = vd.stoh[i] + self.f
+            num += vd.stodv[i] * e_s
+            denom += e_s
+        return num / denom > 0.5
 
 
 def get_random_dv() -> float:
     return np.random.uniform(0.35, 0.65)
 
 
-def get_random_hs() -> int:
-    return np.random.randint(1, 53)
+def get_random_hs(normal: bool, frac: bool) -> int:
+    if normal:
+        v = np.random.normal(10, 5)
+        while v < 1 or v > 53:
+            v = np.random.normal(10, 5)
+        if frac:
+            return v
+        else:
+            return round(v)
+    
+    else:
+        if frac:
+            return np.random.uniform(1, 53)
+        else:
+            return np.random.randint(1, 53)
 
     
