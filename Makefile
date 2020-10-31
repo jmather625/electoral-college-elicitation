@@ -22,7 +22,7 @@ local:
 # makes docker image and pushes to public registry
 .PHONY: docker-image
 docker-image:
-	docker build -t ${CONTAINER_NAME} -f ./prod.Dockerfile .
+	docker build -t ${CONTAINER_NAME} -f ./server/prod.Dockerfile ./server
 	docker tag ${CONTAINER_NAME} ${DOCKER_USERNAME}/${CONTAINER_NAME}:${IMAGE_VERSION}
 	docker push ${DOCKER_USERNAME}/${CONTAINER_NAME}:${IMAGE_VERSION}
 
