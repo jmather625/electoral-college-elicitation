@@ -9,7 +9,7 @@ sys.path.append("../")
 from elicit import ElectoralElicitation
 
 
-application = flask.Flask(__name__)
+app = flask.Flask(__name__)
 
 
 def option_to_string(option: int):
@@ -34,7 +34,7 @@ def generate_vote_data(ee: ElectoralElicitation):
     return vd_dict, vd
 
 
-@application.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     if flask.request.method == 'POST':
         data = None
@@ -94,9 +94,9 @@ def home():
     return flask.render_template('map_view.html', **context)
 
 
-# run the application.
+# run the app.
 if __name__ == "__main__":
-    application.secret_key = 'yeet'
-    application.debug = True
-    application.run(host="0.0.0.0", threaded=True)
+    app.secret_key = 'yeet'
+    app.debug = True
+    app.run(host="0.0.0.0", threaded=True)
 
