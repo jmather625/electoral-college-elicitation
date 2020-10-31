@@ -2,6 +2,7 @@ import numpy as np
 import json
 import logging
 import flask
+import os
 
 from sessions import create_new_session, end_session, get_session_data, insert_session_data
 import sys
@@ -94,9 +95,10 @@ def home():
     return flask.render_template('map_view.html', **context)
 
 
+app.secret_key = 'yeet'
+
+
 # run the app.
 if __name__ == "__main__":
-    app.secret_key = 'yeet'
-    app.debug = True
-    app.run(host="0.0.0.0", threaded=True)
+    app.run(host="0.0.0.0", port=5000, debug=True, threaded=True)
 

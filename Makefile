@@ -14,6 +14,11 @@ DEPLOYMENT_NAME?=ece-mvp
 PURPLE_COLOR='\033[1;34m'
 NO_COLOR='\033[0m'
 
+.PHONY: local
+local:
+	docker-compose build
+	docker-compose up
+
 # makes docker image and pushes to public registry
 .PHONY: docker-image
 docker-image:

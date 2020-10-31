@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  ece_server:
+    build:
+      context: ./server
+      dockerfile: local.Dockerfile
+    environment:
+      - IS_TEST=${IS_TEST}
+    image: ece_local
+    container_name: ece_local
+    command: bash -c "python main.py"
+    volumes:
+     - ./server:/app
+    ports:
+      - "5000:5000"
