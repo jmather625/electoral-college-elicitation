@@ -41,13 +41,33 @@
 </head>
 
 <body>
+    <!-- Just some initial words -->
+    <div class='intro' style="margin: auto; width: 1000px;">
+        <p>This is a simple MVP for eliciting electoral college preferences
+            The survey below will give you 6 different US election voting scenarios.
+            Indicate who you think should win using the "Who Should Win?" button. As you progress,
+            the server algorithmically determines whether you prefer a "winner takes all" or "split-vote" method
+            for splitting votes, as well as what you think the state "fairness" term should be.
+            This term represents how much voting power a state gets just by virtue
+            of being a state. The electoral college sets this term to 2.
+        </p>
+
+        <p>
+            To help make a decision, hover over a state to learn more
+            about the votes in that state. Also, some summary statistics are at the bottom.
+            NOTE: even though the map looks like the US, the population per state and votes
+            per state ARE COMPLETELY RANDOM and regenerated in every scenario. So California might have 1 House Representative,
+            and Wyoming might have 50. Don't make decisions with a bias against/for a state.
+        </p>
+    </div>
+
      <!-- initializes the SVG element -->
      <div class='svg-container' style="margin: auto; width: 1400px;">
         <svg></svg>
     </div>
 
     <!-- party chooser  -->
-    <div class="dropdown_polarity">
+    <div class="dropdown_pick_winner">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="polarity_button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Who Should Win?
         </button>

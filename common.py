@@ -61,9 +61,9 @@ def get_random_dv() -> float:
 
 def get_random_hs(normal: bool, frac: bool) -> int:
     if normal:
-        v = np.random.normal(10, 5)
+        v = np.random.normal(10, 8)
         while v < 1 or v > 53:
-            v = np.random.normal(10, 5)
+            v = np.random.normal(10, 8)
         if frac:
             return v
         else:

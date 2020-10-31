@@ -118,7 +118,11 @@ class ColorInterface {
         let range = [];
         for (let i = 0; i < 10; i++) {
             let v = 0.1 * i + 0.05;
-            domain.push( (v - 0.05).toFixed(1).toString() + " < v_d < " + (v + 0.05).toFixed(1).toString() );
+            if (v < 0.5) {
+                domain.push( (1 - (v + 0.05)).toFixed(1).toString() + " < %R < " + (1 - (v - 0.05)).toFixed(1).toString() )
+            } else {
+                domain.push( (v - 0.05).toFixed(1).toString() + " < %D < " + (v + 0.05).toFixed(1).toString() );
+            }
             range.push(drColorScale(v));
         }
         return [ domain, range ];
