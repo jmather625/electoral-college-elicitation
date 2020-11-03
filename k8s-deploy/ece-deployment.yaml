@@ -18,6 +18,7 @@ spec:
       containers:
       - image: jmather/electoral-college-elicit-mvp:1.1
         name: ece-mvp
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
           name: ece-mvp

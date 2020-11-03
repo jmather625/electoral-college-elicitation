@@ -58,7 +58,6 @@ const construct_hover_text = function(state) {
      * %D: {}, %R: {}
      * {} D votes, {} R votes
     */
-   console.log('called with', state);
    const [hr, vd] = VOTE_INTERFACE.get_state_values(state);
    const pop = hr * HOUSE_REP_TO_POP;
 
@@ -73,9 +72,6 @@ const construct_hover_text = function(state) {
 const displayBaseMap = function () {
     // this is a global declared in the html
     const features = MAP_DATA.features;
-
-    console.log(MAP_DATA)
-    console.log(features)
 
     // title
     mapLayer.append("text")
