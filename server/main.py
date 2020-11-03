@@ -38,6 +38,7 @@ def generate_vote_data(ee: ElectoralElicitation):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if flask.request.method == 'POST':
+        print("got post")
         data = None
         try:
             data = json.loads(flask.request.get_data())
@@ -89,7 +90,7 @@ def home():
     vd_dict, cur_vd = generate_vote_data(ee)
     insert_session_data(sid, [ee, cur_vd])
 
-    fp = open('shapes/usa2.json', 'rb')
+    fp = open('shapes/usa2_mod.json', 'rb')
     context = {
         'vote_data': vd_dict,
         'map_json': json.load(fp),
