@@ -16,7 +16,7 @@ spec:
         app: ece-mvp
     spec:
       containers:
-      - image: jmather/electoral-college-elicit-mvp:1.0
+      - image: jmather/electoral-college-elicit-mvp:1.1
         name: ece-mvp
         ports:
         - containerPort: 80

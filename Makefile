@@ -6,7 +6,7 @@
 
 DOCKER_USERNAME?=jmather
 CONTAINER_NAME?=electoral-college-elicit-mvp
-IMAGE_VERSION?=1.0
+IMAGE_VERSION?=1.1
 
 NAMESPACE?=ece
 DEPLOYMENT_NAME?=ece-mvp
