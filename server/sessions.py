@@ -18,6 +18,9 @@ def create_new_session() -> int:
 
 def get_session_data(sid: int):
     LOCK.acquire()
+    if sid not in SESSION_DATA:
+        LOCK.release()
+        return None
     v = SESSION_DATA[sid]
     LOCK.release()
     return v
